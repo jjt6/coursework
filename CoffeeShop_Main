@@ -1,0 +1,13 @@
+/**
+ * Advanced Software Engineering - F21AS_CW_Group9 Coffee Shop Main Class
+ * 
+ * @author Jyotish Joseph Thomas - H00315392
+ */
+public class CoffeeShop_Main {
+
+	public static void main(String[] args) {
+
+		new CoffeeShop_Manager("MenuList.csv");
+	}
+
+}

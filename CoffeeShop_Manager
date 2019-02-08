@@ -1,0 +1,31 @@
+/**
+ * Advanced Software Engineering - F21AS_CW_Group9 Coffee Shop Manager Class
+ * 
+ * @author Jyotish Joseph Thomas - H00315392
+ */
+
+public class CoffeeShop_Manager {
+
+	private MenuList entries;
+
+	public CoffeeShop_Manager(String inputFile) {
+
+		initMenu("MenuList.csv");
+
+	}
+
+	public void initMenu(String filename) {
+		// initialise menu list
+		entries = new MenuList();
+		entries.initMenuList(filename);
+		initGUI();
+	}
+
+	public void initGUI() {
+
+		// initialise CoffeeShop_GUI
+		CoffeeShop_GUI csGui = new CoffeeShop_GUI(entries);
+		csGui.setVisible(true);
+	}
+
+}

@@ -1,0 +1,152 @@
+import java.util.Comparator;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
+/**
+ * Advanced Software Engineering - F21AS_CW_Group9 Menu Class This class is used
+ * to hold the Menu Objects
+ * 
+ * @author Jyotish Joseph Thomas - H00315392
+ */
+
+public class Menu {
+	private static int next_id = 0; // <-- static, class-wide counter
+	private int id;
+	private String MenuID;
+	private String Description;
+	private String Category;
+	private double UnitPrice;
+	public Date dateCreated;
+
+	// Constructor to create menu object
+	/**
+	 * Creates a menu object with values specified in the parameters
+	 * 
+	 * @param Description Description
+	 * @param Category    Category of Item
+	 * @param UnitPrice   UnitPrice
+	 */
+	public Menu(String desc, String ctg, double untprc) throws Exception {
+		try {
+			// id, description and category must be provided
+			if (desc == null || desc.trim().length() > 20 || ctg.trim().length() > 10 || ctg.trim().length() < 3) {
+				throw new IllegalStateException(
+						"Description should be between 1-20 charectors or category should be between 3-10 charectors");
+			}
+			this.id = ++Menu.next_id;
+			this.MenuID = ctg.trim().substring(0, 3).toUpperCase() + String.format("%07d", id);
+			this.Description = desc.trim();
+			this.Category = ctg.trim();
+			this.UnitPrice = untprc;
+			this.dateCreated = new Date();
+		} catch (IllegalArgumentException e) {
+			System.out.println("Exception thrown: " + e);
+		} catch (IllegalStateException e) {
+			System.out.println("Exception thrown: " + e);
+		}
+	}
+
+	// Getters
+
+	// Methods to get the Menu ID, Description as String
+	// Method to get the Category as Ctgry
+	// Method to get the Unit Price as double
+
+	public String getId() {
+		return MenuID;
+	}
+
+	public String getDescription() {
+		return Description;
+	}
+
+	public String getCategory() {
+		return Category;
+	}
+
+	public double getUnitPrice() {
+		return UnitPrice;
+	}
+
+	public String getDateCreated() {
+		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MMM-yyyy HH:mm:SS");
+		String date = DATE_FORMAT.format(dateCreated);
+		return date;
+	}
+
+	// Setters
+
+	// Methods to change the item description, category and unit price to the value
+	// provided in the parameter
+
+	public void setDescription(String desc) {
+		this.Description = desc;
+	}
+
+	public void setCategory(String ctg) {
+		this.Category = ctg;
+	}
+
+	public void setUnitPrice(double untprc) {
+		this.UnitPrice = untprc;
+	}
+
+	public void setDateCreated(java.util.Date dateCreated) {
+		this.dateCreated = dateCreated;
+	}
+
+	// toString Method to get string containing menu id, category, description and
+	// unitprice
+	public String toString() {
+		return MenuID + "  " + String.format("%-10s", Category) + "  " + String.format("%-20s", Description) + "  "
+				+ String.format("%9.2f", UnitPrice) + "     " + getDateCreated();
+	}
+
+}
+
+class CompCatDesc implements Comparator<Menu> {
+
+	@Override
+	public int compare(Menu f1, Menu f2) {
+		String s1, s2;
+		s1 = f1.getCategory() + f1.getDescription();
+		s2 = f2.getCategory() + f2.getDescription();
+		return s1.compareTo(s2);
+	}
+}
+
+class CompID implements Comparator<Menu> {
+
+	@Override
+	public int compare(Menu e1, Menu e2) {
+		return e1.getId().compareTo(e2.getId());
+	}
+}
+
+class CompDescription implements Comparator<Menu> {
+
+	@Override
+	public int compare(Menu e1, Menu e2) {
+		return e1.getDescription().compareTo(e2.getDescription());
+	}
+}
+
+class CompCategory implements Comparator<Menu> {
+
+	@Override
+	public int compare(Menu f1, Menu f2) {
+		return f1.getCategory().compareTo(f2.getCategory());
+	}
+}
+
+class CompPrice implements Comparator<Menu> {
+
+	@Override
+	public int compare(Menu e1, Menu e2) {
+		if (e1.getUnitPrice() > e2.getUnitPrice()) {
+			return 1;
+		} else {
+			return -1;
+		}
+	}
+}

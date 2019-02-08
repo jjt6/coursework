@@ -1,0 +1,179 @@
+import java.util.Iterator;
+import java.util.TreeSet;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
+/**
+ * Advanced Software Engineering - F21AS_CW_Group9 MenuList Class This class is
+ * used to hold the Menu list object
+ * 
+ * @author Jyotish Joseph Thomas - H00315392
+ */
+
+public class MenuList {
+
+	TreeSet<Menu> ts;
+
+	public MenuList() {
+
+	}
+
+	public void initMenuList(String inputFile) {
+		ts = new TreeSet<Menu>(new CompCatDesc());
+		readFile(inputFile);
+	}
+
+	public void addData(String desc, String cat, double prc) {
+
+		try {
+			// id, description and category must be provided
+
+			if (desc == null || desc.trim().length() > 20 || cat.trim().length() > 10 || cat.trim().length() < 3) {
+				throw new IllegalStateException(
+						"Description should be between 1-20 charectors or category should be between 3-10 charectors");
+			}
+
+			ts.add(new Menu(desc, cat, prc));
+
+		} catch (IllegalArgumentException e) {
+			System.out.println("Exception thrown: " + e);
+		} catch (IllegalStateException e) {
+			System.out.println("Exception thrown: " + e);
+		} catch (Exception e) {
+			System.out.println("Exception thrown: " + e);
+		}
+	}
+
+	public void readFile(String inputfile) {
+
+		BufferedReader br = null;
+		String line = "";
+
+		try {
+
+			br = new BufferedReader(new FileReader(inputfile));
+			while ((line = br.readLine()) != null) {
+				// use comma as separator
+				String[] data = line.split(",");
+				double prc = Double.parseDouble(data[2]);
+				addData(data[0], data[1], prc);
+			}
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	/**
+	 * @return All the menu details
+	 */
+	public String listDetails(TreeSet<Menu> trs) {
+		StringBuffer allEntries = new StringBuffer();
+		for (Menu details : trs) {
+			allEntries.append(details);
+			allEntries.append('\n');
+		}
+		return allEntries.toString();
+	}
+
+	/**
+	 * @return All filtered menu details
+	 */
+	public String listFilteredDetails(String cat) {
+
+		// creating new comparator for MenuList based on filtered category
+		TreeSet<Menu> tsCat = new TreeSet<Menu>(new CompID());
+		for (Iterator<Menu> i = ts.iterator(); i.hasNext();) {
+			Menu mn = (Menu) i.next();
+			String ct = mn.getCategory();
+			if (ct.toLowerCase().equals(cat.toLowerCase())) {
+				tsCat.add(mn);
+			}
+		}
+
+		String str = "  MenuID     Category        Description        Unit Price    Date_Created" + "\n";
+		str += listDetails(tsCat);
+		return str;
+	}
+
+	/**
+	 * @return All menu details in name order
+	 */
+	public String listByName() {
+		// creating new comparator for MenuList based on Description
+		TreeSet<Menu> tsDesc = new TreeSet<Menu>(new CompDescription());
+		tsDesc.addAll(ts);
+		String str = "  MenuID     Category        Description        Unit Price    Date_Created" + "\n";
+		str += listDetails(tsDesc);
+		return str;
+	}
+
+	/**
+	 * @return All menu details in category order
+	 */
+	public String listByCategory() {
+		// creating new comparator for MenuList based on Category
+		TreeSet<Menu> tsCat = new TreeSet<Menu>(new CompCatDesc());
+		tsCat.addAll(ts);
+		String str = "  MenuID     Category        Description        Unit Price    Date_Created" + "\n";
+		str += listDetails(tsCat);
+		return str;
+	}
+
+	/**
+	 * @return All unique categories
+	 */
+	public String[] listCategory() {
+		// creating new comparator for MenuList based on Category
+		TreeSet<Menu> tsCat = new TreeSet<Menu>(new CompCategory());
+		tsCat.addAll(ts);
+		String[] newArray = new String[tsCat.size()];
+		int cnt = 0;
+		for (Menu details : tsCat) {
+			newArray[cnt] = details.getCategory();
+			cnt++;
+		}
+
+		return newArray;
+	}
+
+	/**
+	 * @return All menu details in ID order
+	 */
+	public String listByID() {
+		// creating new comparator for MenuList based on Category
+		TreeSet<Menu> tsID = new TreeSet<Menu>(new CompID());
+		tsID.addAll(ts);
+		String str = "  MenuID     Category        Description        Unit Price    Date_Created" + "\n";
+		str += listDetails(tsID);
+		return str;
+	}
+
+	/**
+	 * Look up an id and return the corresponding menu details.
+	 * 
+	 * @param id The id to be looked up.
+	 * @return The details corresponding to the id, null if none
+	 */
+	public Menu findByID(String id) {
+		for (Menu mn : ts) {
+			if (mn.getId().equals(id)) {
+				return mn;
+			}
+		}
+		return null;
+	}
+
+}
